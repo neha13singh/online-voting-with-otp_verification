@@ -1,0 +1,21 @@
+{
+    "name": "voting-platform-backend",
+    "version": "1.0.0",
+    "description": "Backend for the online voting platform",
+    "main": "server/app.js",
+    "scripts": {
+        "start": "nodemon server/app.js",
+        "setup": "node sql/setup.js"
+    },
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "mysql2": "^2.3.3"
+    },
+    "author": "Your Name",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^3.1.9"
+    }
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Vote</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0fff0; /* Light greenish white */
+        }
+        .card {
+            background-color: #ffffff; /* White background */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+            border: 2px solid #28a745; /* Green border */
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #28a745; /* Green text */
+        }
+        .candidates-container {
+            display: flex;
+            flex-wrap: wrap; /* Wrap rows for responsiveness */
+            gap: 20px; /* Space between candidates */
+            justify-content: center; /* Center-align candidates */
+        }
+        .candidate {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #28a745; /* Green border */
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9fff9; /* Very light green background */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 200px; /* Fixed width for each candidate */
+        }
+        .candidate:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .candidate-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+            border: 2px solid #28a745; /* Green border */
+        }
+        .candidate button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745; /* Green button */
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .candidate button:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: scale(1.05); /* Slight zoom effect */
+        }
+        .back-button {
+            margin-top: 30px; /* Add space above the back button */
+            padding: 10px 20px;
+           
+           
+        }
+        
+        .back{
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            background-color: #28a745;
+            border-radius: 4px;
+            border: 2px solid #28a745;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .back:hover {
+            background-color: white;/*white on hower*/
+            color: #28a745;
+        }
+       
+    </style>
+   
+</head>
+<body>
+    <div class="card">
+        <h1>Vote for Your Candidate</h1>
+        <form action="/vote" method="POST">
+            <div class="candidates-container">
+                <div class="candidate">
+                    <img src="../images/candidate1.jpg" alt="Candidate 1" class="candidate-image">
+                    <button type="submit" name="candidate" value="Candidate1">Vote for Candidate 1</button>
+                </div>
+                <div class="candidate">
+                    <img src="../images/candidate2.jpg" alt="Candidate 2" class="candidate-image">
+                    <button type="submit" name="candidate" value="Candidate2">Vote for Candidate 2</button>
+                </div>
+               
+            </div>
+        </form>
+        <div class="back-button">
+            <a href="index.html" class="back">Go Back</a>
+
+        </div>
+        
+    </div>
+</body>
+</html>
