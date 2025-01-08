@@ -4,6 +4,7 @@ const mysql = require('mysql2');
 const path = require('path');
 const twilio = require('twilio');
 const cors = require('cors');
+const fetch = require('node-fetch');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,20 +40,23 @@ app.post('/send-otp', (req, res) => {
         return res.status(400).send('Phone number is required');
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000);
+    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
+
+    // Log the OTP for debugging (remove in production)
+    console.log(`Generated OTP for ${phone_number}: ${otp}`);
 
     client.messages
         .create({
             body: `Your OTP is ${otp}`,
-            from: '9463634652', // Replace with your Twilio number
-            to: phone_number
+            from: '+919463634652', // Replace with your Twilio number in E.164 format
+            to: phone_number // Ensure this is in E.164 format as well
         })
         .then(message => {
-            console.log('OTP sent:', message.sid);
+            console.log('OTP sent:', message.sid); // Log the message SID
             res.send('OTP sent successfully');
         })
         .catch(err => {
-            console.error('Error sending OTP:', err);
+            console.error('Error sending OTP:', err); // Log the error
             res.status(500).send('Error sending OTP');
         });
 });
@@ -94,6 +98,32 @@ app.get('/vote', (req, res) => {
 });
 
 // Add more routes for handling form submissions and voting logic
+
+// Add this new route to verify phone.email
+app.post('/verify-phone-email', async (req, res) => {
+    const { user_json_url } = req.body;
+    
+    try {
+        // Fetch user data from phone.email
+        const response = await fetch(user_json_url);
+        const userData = await response.json();
+        
+        const phone_number = `${userData.user_country_code}${userData.user_phone_number}`;
+        
+        res.json({
+            success: true,
+            phone_number,
+            first_name: userData.user_first_name,
+            last_name: userData.user_last_name
+        });
+    } catch (error) {
+        console.error('Error verifying phone.email:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to verify phone number'
+        });
+    }
+});
 
 app.listen(3000, () => {
   console.log('Server running on port 3000');

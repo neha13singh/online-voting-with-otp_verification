@@ -83,40 +83,46 @@
 <body>
     <div class="card">
         <h1>Register</h1>
+        
+        <!-- Phone.email button with exact provided code -->
+        <div class="pe_signin_button" data-client-id="13712223655013483399">
+            <script src="https://www.phone.email/sign_in_button_v1.js" async></script>
+        </div>
+        
+        <!-- Phone.email listener script -->
+        <script>
+            function phoneEmailListener(userObj) {
+                var user_json_url = userObj.user_json_url;
+                
+                // Send the verification data to your backend
+                fetch('http://localhost:3000/verify-phone-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_json_url })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelector('input[name="phone_number"]').value = data.phone_number;
+                        alert('Phone Verification Successful!\nPlease complete your registration.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Phone Verification Successful!\nPlease fetch authenticated country code and phone number from following JSON file URL.\n ' + user_json_url);
+                });
+            }
+        </script>
+        
+        <!-- Keep your existing form -->
         <form action="/register" method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="text" name="phone_number" placeholder="Phone Number" required>
-            <button type="button" onclick="sendOtp()">Send OTP</button>
-            <input type="text" name="otp" placeholder="Enter OTP" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Register</button>
         </form>
     </div>
-    <script>
-        function sendOtp() {
-            const phoneNumber = document.querySelector('input[name="phone_number"]').value.trim();
-            
-            if (!phoneNumber) {
-                alert('Please enter a valid phone number.');
-                return;
-            }
-
-            fetch('http://localhost:3000/send-otp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ phone_number: phoneNumber })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.text();
-            })
-            .then(data => alert(data))
-            .catch(error => console.error('Error:', error));
-        }
-    </script>
 </body>
 </html>

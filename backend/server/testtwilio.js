@@ -9,7 +9,7 @@ client.messages
     .create({
         body: 'Hello from Twilio!',
         from: '+919463634652', // Your Twilio number in E.164 format
-        to: '+919876543210' // Replace with a valid Indian recipient number in E.164 format
+        to: '+917379613013' // Replace with a valid Indian recipient number in E.164 format
     })
     .then(message => console.log('Message sent with SID:', message.sid))
     .catch(err => console.error('Error sending message:', err));
