@@ -1,4 +1,3 @@
-
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -8,6 +7,7 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #f0fff0; /* Light greenish white */
+    padding-top: 70px !important; /* Added margin from top to prevent content hiding behind navbar */
 }
 .card {
     background-color: #ffffff; /* White background */
@@ -70,11 +70,8 @@ h1 {
 .back-button {
     margin-top: 30px; /* Add space above the back button */
     padding: 10px 20px;
-   
-   
 }
-
-.back{
+.back {
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
@@ -88,4 +85,31 @@ h1 {
 .back:hover {
     background-color: white;/*white on hower*/
     color: #28a745;
+}
+.navbar {
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    background-color: #28a745;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.nav-links {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+.nav-link:hover {
+    background-color: #218838;
 }
