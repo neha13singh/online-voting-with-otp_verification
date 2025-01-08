@@ -89,11 +89,11 @@
         window.addEventListener('DOMContentLoaded', function() {
             const userData = JSON.parse(localStorage.getItem('userData'));
             
-            // if (!userData) {
-            //     alert('Please complete phone verification first!');
-            //     window.location.href = 'phone-login.html';
-            //     return;
-            // }
+            if (!userData) {
+                alert('Please complete phone verification first!');
+                window.location.href = 'phone-login.html';
+                return;
+            }
 
             // Only fill in the phone number from userData
             document.querySelector('input[name="phone_number"]').value = userData.phone_number;
