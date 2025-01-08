@@ -95,13 +95,15 @@ h1 {
     padding: 0.5rem; /* Reduced padding */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     height: 40px; /* Added fixed height */
+    display: flex;
+    justify-content: flex-end; /* Align navbar content to right */
 }
 .nav-links {
     display: flex;
     justify-content: flex-end;
-    max-width: 800px; /* Reduced max-width */
-    margin: 0 auto;
+    align-items: center; /* Vertically center the links */
     padding: 0 20px;
+    margin-left: auto; /* Push links to right */
 }
 .nav-link {
     color: white;
