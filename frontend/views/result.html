@@ -81,18 +81,52 @@
         }
 
         .winner-label {
-            background: linear-gradient(45deg, #28a745, #1a5928);
+            background: linear-gradient(45deg, #ed7f3a, #db1414);
             color: white;
-            padding: 8px 25px;
+            padding: 15px 30px;
+            
             border-radius: 30px;
             position: absolute;
             top: -20px;
             left: 50%;
             transform: translateX(-50%);
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 2 rem;
             letter-spacing: 2px;
             box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-size: 200% auto;
+        }
+
+        .winner-label:hover {
+            background-position: right center;
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .participant-label {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 25px;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-size: 200% auto;
+        }
+
+        .participant-label:hover {
+            background-position: right center;
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 6px 18px rgba(108, 117, 125, 0.4);
         }
 
         .other-results {
@@ -167,10 +201,10 @@
         }
 
         .refresh-btn {
-            background: linear-gradient(45deg, #28a745, #1a5928);
-            color: white;
+            background: linear-gradient(45deg, #effca7, #f5f25b);
+            color: rgb(0, 0, 0);
             border: none;
-            padding: 15px 35px;
+            padding: 10px 20px;
             border-radius: 30px;
             font-size: 1.2rem;
             cursor: pointer;
@@ -321,6 +355,7 @@
                         const resultCard = document.createElement('div');
                         resultCard.className = 'result-card';
                         resultCard.innerHTML = `
+                            <div class="participant-label">OTHER PARTICIPANTS</div>
                             <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
                             <h3 class="candidate-name">${candidate.name}</h3>
                             <div class="vote-count">${candidate.vote_count || 0}</div>
