@@ -75,8 +75,8 @@
     <div class="card">
         <h1>Complete Registration</h1>
         <form id="registerForm">
-            <input type="text" name="first_name" readonly>
-            <input type="text" name="last_name" readonly>
+            <input type="text" name="first_name" placeholder="Enter First Name" required>
+            <input type="text" name="last_name" placeholder="Enter Last Name" required>
             <input type="text" name="phone_number" id="phone_number" readonly>
             <input type="text" name="username" placeholder="Choose Username" required>
             <input type="password" name="password" placeholder="Choose Password" required>
@@ -89,15 +89,13 @@
         window.addEventListener('DOMContentLoaded', function() {
             const userData = JSON.parse(localStorage.getItem('userData'));
             
-            if (!userData) {
-                alert('Please complete phone verification first!');
-                window.location.href = 'phone-login.html';
-                return;
-            }
+            // if (!userData) {
+            //     alert('Please complete phone verification first!');
+            //     window.location.href = 'phone-login.html';
+            //     return;
+            // }
 
-            // Fill in the form fields
-            document.querySelector('input[name="first_name"]').value = userData.first_name;
-            document.querySelector('input[name="last_name"]').value = userData.last_name;
+            // Only fill in the phone number from userData
             document.querySelector('input[name="phone_number"]').value = userData.phone_number;
         });
 

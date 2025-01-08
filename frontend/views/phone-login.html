@@ -87,8 +87,6 @@
             <h2>Complete Registration</h2>
             <form id="registerForm">
                 <input type="text" name="phone_number" readonly>
-                <input type="text" name="first_name" placeholder="First Name" required>
-                <input type="text" name="last_name" placeholder="Last Name" required>
                 <input type="text" name="username" placeholder="Choose Username" required>
                 <input type="password" name="password" placeholder="Choose Password" required>
                 <button type="submit">Register</button>
@@ -113,22 +111,13 @@
                     if (data.isExistingUser) {
                         window.location.href = 'login.html';
                     } else {
-                        // Fetch user data from the provided URL
-                        fetch(user_json_url)
-                            .then(response => response.json())
-                            .then(userData => {
-                                // Show registration form and hide verification section
-                                document.getElementById('verification-section').classList.add('hidden');
-                                document.getElementById('registration-section').classList.remove('hidden');
-                                
-                                // Decode and display the phone number
-                                const decodedPhone = atob(data.phone_number);
-                                document.querySelector('input[name="phone_number"]').value = decodedPhone;
-                                
-                                // Set first name and last name from userData
-                                document.querySelector('input[name="first_name"]').value = userData.user_first_name || '';
-                                document.querySelector('input[name="last_name"]').value = userData.user_last_name || '';
-                            });
+                        // Show registration form and hide verification section
+                        document.getElementById('verification-section').classList.add('hidden');
+                        document.getElementById('registration-section').classList.remove('hidden');
+                        
+                        // Decode and display the phone number
+                        const decodedPhone = atob(data.phone_number);
+                        document.querySelector('input[name="phone_number"]').value = decodedPhone;
                     }
                 } else {
                     alert('Verification failed. Please try again.');
@@ -146,8 +135,6 @@
 
             const formData = {
                 phone_number: this.phone_number.value,
-                first_name: this.first_name.value,
-                last_name: this.last_name.value,
                 username: this.username.value,
                 password: this.password.value
             };
