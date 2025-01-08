@@ -105,7 +105,7 @@
     <nav class="navbar">
         <div class="nav-links">
             <a href="/frontend/views/index.html" class="nav-link">Home</a>
-            
+            <a href="/frontend/views/result.html" class="nav-link" onclick="handleResultClick()">Results</a>
         </div>
     </nav>
 
@@ -114,6 +114,16 @@
             localStorage.removeItem('userData');
             alert('You have been logged out successfully');
             window.location.href = '/frontend/views/login.html';
+        }
+
+        function handleResultClick() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                alert('Please login to view results');
+                window.location.href = '/frontend/views/login.html';
+                return false;
+            }
+            return true;
         }
 
         async function updateCandidatesDisplay() {

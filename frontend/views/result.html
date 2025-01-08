@@ -35,21 +35,58 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
-        .results-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin: 20px 0;
+        .winner-card {
+            background: linear-gradient(145deg, #ffffff, #f9fff9);
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .winner-card .candidate-image {
+            width: 200px;
+            height: 200px;
+        }
+
+        .winner-card .candidate-name {
+            font-size: 2rem;
+        }
+
+        .winner-card .vote-count {
+            font-size: 2.5rem;
+        }
+
+        .winner-label {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+        }
+
+        .other-results {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .result-card {
             background: linear-gradient(145deg, #ffffff, #f9fff9);
             border: 2px solid #28a745;
             border-radius: 10px;
-            padding: 20px;
+            padding: 15px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             overflow: hidden;
+            flex: 0 1 200px;
         }
 
         .result-card:hover {
@@ -139,13 +176,15 @@
     <nav class="navbar">
         <div class="nav-links">
             <a href="/frontend/views/index.html" class="nav-link">Home</a>
-            
         </div>
     </nav>
     <div class="card">
         <h1>Election Results</h1>
-        <div class="results-container" id="resultsContainer">
-            <!-- Results will be dynamically loaded here -->
+        <div id="winnerContainer">
+            <!-- Winner card will be displayed here -->
+        </div>
+        <div class="other-results" id="otherResultsContainer">
+            <!-- Other candidates will be displayed here -->
         </div>
         <button onclick="refreshResults()" class="refresh-btn">
             Refresh Results
@@ -159,14 +198,44 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const resultsContainer = document.getElementById('resultsContainer');
-                    resultsContainer.innerHTML = '';
+                    const winnerContainer = document.getElementById('winnerContainer');
+                    const otherResultsContainer = document.getElementById('otherResultsContainer');
+                    
+                    winnerContainer.innerHTML = '';
+                    otherResultsContainer.innerHTML = '';
                     
                     // Calculate total votes
                     const totalVotes = data.candidates.reduce((sum, candidate) => 
                         sum + (candidate.vote_count || 0), 0);
 
-                    data.candidates.forEach(candidate => {
+                    // Sort candidates by vote count
+                    const sortedCandidates = [...data.candidates].sort((a, b) => 
+                        (b.vote_count || 0) - (a.vote_count || 0));
+
+                    const winner = sortedCandidates[0];
+                    const otherCandidates = sortedCandidates.slice(1);
+
+                    // Display winner
+                    const winnerPercentage = totalVotes > 0 
+                        ? ((winner.vote_count || 0) / totalVotes * 100).toFixed(1) 
+                        : 0;
+
+                    const winnerCard = document.createElement('div');
+                    winnerCard.className = 'winner-card';
+                    winnerCard.innerHTML = `
+                        <div class="winner-label">WINNER</div>
+                        <img src="../images/candidate${winner.id}.jpg" alt="${winner.name}" class="candidate-image">
+                        <h3 class="candidate-name">${winner.name}</h3>
+                        <div class="vote-count">${winner.vote_count || 0}</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${winnerPercentage}%"></div>
+                        </div>
+                        <div class="percentage">${winnerPercentage}% of total votes</div>
+                    `;
+                    winnerContainer.appendChild(winnerCard);
+
+                    // Display other candidates
+                    otherCandidates.forEach(candidate => {
                         const percentage = totalVotes > 0 
                             ? ((candidate.vote_count || 0) / totalVotes * 100).toFixed(1) 
                             : 0;
@@ -182,7 +251,7 @@
                             </div>
                             <div class="percentage">${percentage}% of total votes</div>
                         `;
-                        resultsContainer.appendChild(resultCard);
+                        otherResultsContainer.appendChild(resultCard);
                     });
                 }
             } catch (error) {

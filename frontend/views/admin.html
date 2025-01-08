@@ -138,7 +138,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-links">
-            <a href="/frontend/views/index.html" class="nav-link">Home</a>
+            <a href="#" onclick="handleHomeClick()" class="nav-link">Home</a>
             
         </div>
     </nav>
@@ -188,6 +188,11 @@
                 showAdminPanel();
                 loadCandidates();
             }
+        }
+
+        function handleHomeClick() {
+            localStorage.clear();
+            window.location.href = '/frontend/views/index.html';
         }
 
         async function handleLogin() {
