@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0fff0;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            border: 3px solid #28a745;
+        }
+
+        h1 {
+            color: #28a745;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .result-card {
+            background: linear-gradient(145deg, #ffffff, #f9fff9);
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.2);
+        }
+
+        .candidate-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 3px solid #28a745;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .candidate-name {
+            font-size: 1.4rem;
+            color: #218838;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .vote-count {
+            font-size: 2rem;
+            color: #28a745;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #28a745;
+            transition: width 1s ease-in-out;
+            border-radius: 10px;
+        }
+
+        .percentage {
+            font-size: 1.1rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .refresh-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .result-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Election Results</h1>
+        <div class="results-container" id="resultsContainer">
+            <!-- Results will be dynamically loaded here -->
+        </div>
+        <button onclick="refreshResults()" class="refresh-btn">
+            Refresh Results
+        </button>
+    </div>
+
+    <script>
+        async function loadResults() {
+            try {
+                const response = await fetch('http://localhost:3000/candidates');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const resultsContainer = document.getElementById('resultsContainer');
+                    resultsContainer.innerHTML = '';
+                    
+                    // Calculate total votes
+                    const totalVotes = data.candidates.reduce((sum, candidate) => 
+                        sum + (candidate.vote_count || 0), 0);
+
+                    data.candidates.forEach(candidate => {
+                        const percentage = totalVotes > 0 
+                            ? ((candidate.vote_count || 0) / totalVotes * 100).toFixed(1) 
+                            : 0;
+
+                        const resultCard = document.createElement('div');
+                        resultCard.className = 'result-card';
+                        resultCard.innerHTML = `
+                            <img src="../images/candidate${candidate.id}.jpg" alt="${candidate.name}" class="candidate-image">
+                            <h3 class="candidate-name">${candidate.name}</h3>
+                            <div class="vote-count">${candidate.vote_count || 0}</div>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="percentage">${percentage}% of total votes</div>
+                        `;
+                        resultsContainer.appendChild(resultCard);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading results:', error);
+            }
+        }
+
+        function refreshResults() {
+            loadResults();
+        }
+
+        // Load results when page loads
+        window.onload = loadResults;
+
+        // Refresh results every 30 seconds
+        setInterval(loadResults, 30000);
+    </script>
+</body>
+</html>

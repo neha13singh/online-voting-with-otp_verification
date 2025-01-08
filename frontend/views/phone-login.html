@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Phone Verification</title>
+    <style>
+        /* Additional styles specific to phone-login page */
+        body {
+            background-color: #f0fff0; /* Light greenish white */
+        }
+        .card {
+            background-color: #ffffff; /* White background */
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            border: 3px solid #28a745; /* Green border */
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #28a745; /* Green text */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #28a745; /* Green text */
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #28a745; /* Green border */
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box; /* Include padding and border in width */
+        }
+        input:focus {
+            border-color: #218838; /* Darker green on focus */
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #28a745; /* Green button */
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: scale(1.05); /* Slight zoom effect */
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Phone Verification</h1>
+        
+        <!-- Initial verification section -->
+        <div id="verification-section">
+            <div class="pe_signin_button" data-client-id="13712223655013483399">
+                <script src="https://www.phone.email/sign_in_button_v1.js" async></script>
+            </div>
+        </div>
+        
+        <!-- Registration form (initially hidden) -->
+        <div id="registration-section" class="hidden">
+            <h2>Complete Registration</h2>
+            <form id="registerForm">
+                <input type="text" name="phone_number" readonly>
+                <input type="text" name="first_name" placeholder="First Name" required>
+                <input type="text" name="last_name" placeholder="Last Name" required>
+                <input type="text" name="username" placeholder="Choose Username" required>
+                <input type="password" name="password" placeholder="Choose Password" required>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function phoneEmailListener(userObj) {
+            var user_json_url = userObj.user_json_url;
+            
+            fetch('http://localhost:3000/verify-phone-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_json_url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.isExistingUser) {
+                        window.location.href = 'login.html';
+                    } else {
+                        // Fetch user data from the provided URL
+                        fetch(user_json_url)
+                            .then(response => response.json())
+                            .then(userData => {
+                                // Show registration form and hide verification section
+                                document.getElementById('verification-section').classList.add('hidden');
+                                document.getElementById('registration-section').classList.remove('hidden');
+                                
+                                // Decode and display the phone number
+                                const decodedPhone = atob(data.phone_number);
+                                document.querySelector('input[name="phone_number"]').value = decodedPhone;
+                                
+                                // Set first name and last name from userData
+                                document.querySelector('input[name="first_name"]').value = userData.user_first_name || '';
+                                document.querySelector('input[name="last_name"]').value = userData.user_last_name || '';
+                            });
+                    }
+                } else {
+                    alert('Verification failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Verification failed. Please try again.');
+            });
+        }
+
+        // Handle registration form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                phone_number: this.phone_number.value,
+                first_name: this.first_name.value,
+                last_name: this.last_name.value,
+                username: this.username.value,
+                password: this.password.value
+            };
+
+            fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Registration successful!');
+                    window.location.href = 'login.html';
+                } else {
+                    throw new Error('Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Registration failed. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>

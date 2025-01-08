@@ -25,6 +25,8 @@ const createUsersTable = () => {
       username VARCHAR(255) NOT NULL,
       phone_number VARCHAR(15) NOT NULL UNIQUE,
       password VARCHAR(255) NOT NULL,
+      first_name VARCHAR(255) NOT NULL,
+      last_name VARCHAR(255) NOT NULL,
       has_voted BOOLEAN DEFAULT FALSE
     )
   `;
@@ -42,8 +44,10 @@ const createVotesTable = () => {
   const query = `
     CREATE TABLE IF NOT EXISTS votes (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      candidate VARCHAR(255) NOT NULL,
-      vote_count INT DEFAULT 0
+      candidate_id INT,
+      user_id INT,
+      FOREIGN KEY (candidate_id) REFERENCES candidates(id),
+      FOREIGN KEY (user_id) REFERENCES users(id)
     )
   `;
   connection.query(query, (err, result) => {
@@ -55,10 +59,27 @@ const createVotesTable = () => {
   });
 };
 
+const createCandidatesTable = () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS candidates (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL
+    )
+  `;
+  connection.query(query, (err, result) => {
+    if (err) {
+      console.error('Error creating candidates table:', err);
+      return;
+    }
+    console.log('Candidates table created or already exists');
+  });
+};
+
 // Function to run all setup queries
 const runSetup = () => {
   createUsersTable();
   createVotesTable();
+  createCandidatesTable();
 };
 
 // Run the setup

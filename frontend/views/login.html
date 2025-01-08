@@ -80,13 +80,82 @@
     </style>
 </head>
 <body>
+    <script>
+        // Check if user is already logged in
+        window.onload = function() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    if (user.isLoggedIn) {
+                        // User is already logged in, redirect to vote page
+                        window.location.href = '/frontend/views/vote.html';
+                    }
+                } catch (error) {
+                    // Invalid user data, clear it
+                    localStorage.removeItem('userData');
+                }
+            }
+        }
+    </script>
+
     <div class="card">
         <h1>Login</h1>
-        <form action="/login" method="POST">
+        <form id="loginForm" onsubmit="handleLogin(event)">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
+            <p id="errorMessage" style="color: red; display: none;"></p>
         </form>
     </div>
+
+    <script>
+        async function handleLogin(event) {
+            event.preventDefault();
+            const form = event.target;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            const formData = {
+                username: form.username.value,
+                password: form.password.value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store minimal user data in localStorage
+                    localStorage.setItem('userData', JSON.stringify({
+                        id: data.user.id,
+                        username: data.user.username,
+                        isLoggedIn: true,
+                        has_voted: data.user.has_voted
+                    }));
+                    
+                    // Redirect to vote page
+                    window.location.href = '/frontend/views/vote.html';
+                } else {
+                    // Show error and redirect to index after 2 seconds
+                    alert(data.message || 'Login failed');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            }
+        }
+    </script>
 </body>
 </html>

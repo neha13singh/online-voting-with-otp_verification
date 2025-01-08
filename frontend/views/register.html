@@ -6,40 +6,31 @@
     <link rel="stylesheet" href="../css/style.css">
     <title>Register</title>
     <style>
-        /* Global Styles */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             background-color: #f0fff0; /* Light greenish white */
         }
-
         .card {
             background-color: #ffffff; /* White background */
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             padding: 40px;
             width: 90%;
-            max-width: 400px;
+            max-width: 600px;
             text-align: center;
             border: 3px solid #28a745; /* Green border */
+            margin: auto; /* Center the card */
+            margin-top: 50px; /* Add some space from the top */
         }
-
         h1 {
             font-size: 2rem;
             margin-bottom: 30px;
             color: #28a745; /* Green text */
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
-
         input {
             width: 100%;
             padding: 12px;
-            margin: 15px 0px;
+            margin: 15px 0;
             border: 2px solid #28a745; /* Green border */
             border-radius: 4px;
             font-size: 1rem;
@@ -47,11 +38,9 @@
             transition: border-color 0.2s ease;
             box-sizing: border-box; /* Include padding and border in width */
         }
-
         input:focus {
             border-color: #218838; /* Darker green on focus */
         }
-
         button {
             width: 100%;
             padding: 12px;
@@ -63,66 +52,75 @@
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
-
         button:hover {
             background-color: #218838; /* Darker green on hover */
             transform: scale(1.05); /* Slight zoom effect */
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5rem;
-            }
-            .card {
-                padding: 20px;
-            }
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h1>Register</h1>
-        
-        <!-- Phone.email button with exact provided code -->
-        <div class="pe_signin_button" data-client-id="13712223655013483399">
-            <script src="https://www.phone.email/sign_in_button_v1.js" async></script>
-        </div>
-        
-        <!-- Phone.email listener script -->
-        <script>
-            function phoneEmailListener(userObj) {
-                var user_json_url = userObj.user_json_url;
-                
-                // Send the verification data to your backend
-                fetch('http://localhost:3000/verify-phone-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ user_json_url })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.querySelector('input[name="phone_number"]').value = data.phone_number;
-                        alert('Phone Verification Successful!\nPlease complete your registration.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Phone Verification Successful!\nPlease fetch authenticated country code and phone number from following JSON file URL.\n ' + user_json_url);
-                });
-            }
-        </script>
-        
-        <!-- Keep your existing form -->
-        <form action="/register" method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="text" name="phone_number" placeholder="Phone Number" required>
-            <input type="password" name="password" placeholder="Password" required>
+        <h1>Complete Registration</h1>
+        <form id="registerForm">
+            <input type="text" name="first_name" readonly>
+            <input type="text" name="last_name" readonly>
+            <input type="text" name="phone_number" id="phone_number" readonly>
+            <input type="text" name="username" placeholder="Choose Username" required>
+            <input type="password" name="password" placeholder="Choose Password" required>
             <button type="submit">Register</button>
         </form>
     </div>
+
+    <script>
+        // Load user data from localStorage when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            const userData = JSON.parse(localStorage.getItem('userData'));
+            
+            if (!userData) {
+                alert('Please complete phone verification first!');
+                window.location.href = 'phone-login.html';
+                return;
+            }
+
+            // Fill in the form fields
+            document.querySelector('input[name="first_name"]').value = userData.first_name;
+            document.querySelector('input[name="last_name"]').value = userData.last_name;
+            document.querySelector('input[name="phone_number"]').value = userData.phone_number;
+        });
+
+        // Handle form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                first_name: this.first_name.value,
+                last_name: this.last_name.value,
+                phone_number: this.phone_number.value,
+                username: this.username.value,
+                password: this.password.value
+            };
+
+            fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('userData');
+                    alert('Registration successful!');
+                    window.location.href = 'login.html';
+                } else {
+                    throw new Error('Registration failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Registration failed. Please try again.');
+            });
+        });
+    </script>
 </body>
 </html>

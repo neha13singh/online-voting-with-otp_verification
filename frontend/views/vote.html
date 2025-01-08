@@ -75,10 +75,10 @@
             transform: scale(1.05); /* Slight zoom effect */
         }
         .back-button {
-            margin-top: 30px; /* Add space above the back button */
-            padding: 10px 20px;
-           
-           
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
         }
         
         .back{
@@ -91,6 +91,7 @@
             border-radius: 4px;
             border: 2px solid #28a745;
             transition: background-color 0.2s ease, color 0.2s ease;
+            cursor: pointer;
         }
         .back:hover {
             background-color: white;/*white on hower*/
@@ -101,26 +102,129 @@
    
 </head>
 <body>
+    <script>
+        function handleLogout() {
+            localStorage.removeItem('userData');
+            alert('You have been logged out successfully');
+            window.location.href = '/frontend/views/login.html';
+        }
+
+        async function updateCandidatesDisplay() {
+            try {
+                const response = await fetch('http://localhost:3000/candidates');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const candidatesContainer = document.querySelector('.candidates-container');
+                    candidatesContainer.innerHTML = ''; // Clear existing content
+                    
+                    const userData = JSON.parse(localStorage.getItem('userData'));
+                    const hasVoted = userData.has_voted;
+                    
+                    data.candidates.forEach(candidate => {
+                        const candidateElement = document.createElement('div');
+                        candidateElement.className = 'candidate';
+                        candidateElement.innerHTML = `
+                            <img src="../images/candidate${candidate.id}.jpg" alt="${candidate.name}" class="candidate-image">
+                            <h3>${candidate.name}</h3>
+                            <p>Votes: ${candidate.vote_count}</p>
+                            ${!hasVoted ? 
+                                `<button type="button" class="vote-btn" onclick="handleVote(${candidate.id})">
+                                    Vote for ${candidate.name}
+                                </button>` :
+                                `<button type="button" class="vote-btn" disabled style="background-color: #cccccc">
+                                    Already Voted
+                                </button>`
+                            }
+                        `;
+                        candidatesContainer.appendChild(candidateElement);
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating candidates:', error);
+            }
+        }
+
+        async function handleVote(candidateId) {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                alert('Please login to vote');
+                window.location.href = '/login';
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            
+            if (user.has_voted) {
+                alert('You have already voted');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/vote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        candidate_id: candidateId,
+                        user_id: user.id
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Vote submitted successfully!');
+                    // Update user data to reflect they've voted
+                    user.has_voted = true;
+                    localStorage.setItem('userData', JSON.stringify(user));
+                    // Update the vote counts and disable buttons
+                    await updateCandidatesDisplay();
+                } else {
+                    alert('Error submitting vote. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error submitting vote. Please try again.');
+            }
+        }
+
+        // Check for authentication when the page loads
+        window.onload = async function() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                alert('Please login to access the voting page');
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(userData);
+                if (!user.isLoggedIn) {
+                    alert('Please login to access the voting page');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                await updateCandidatesDisplay();
+                
+            } catch (error) {
+                localStorage.removeItem('userData');
+                alert('Session expired. Please login again');
+                window.location.href = '/login';
+            }
+        }
+    </script>
     <div class="card">
         <h1>Vote for Your Candidate</h1>
-        <form action="/vote" method="POST">
-            <div class="candidates-container">
-                <div class="candidate">
-                    <img src="../images/candidate1.jpg" alt="Candidate 1" class="candidate-image">
-                    <button type="submit" name="candidate" value="Candidate1">Vote for Candidate 1</button>
-                </div>
-                <div class="candidate">
-                    <img src="../images/candidate2.jpg" alt="Candidate 2" class="candidate-image">
-                    <button type="submit" name="candidate" value="Candidate2">Vote for Candidate 2</button>
-                </div>
-               
-            </div>
-        </form>
-        <div class="back-button">
-            <a href="index.html" class="back">Go Back</a>
-
+        <div class="candidates-container">
+            <!-- Candidates will be dynamically loaded here -->
         </div>
-        
+        <div class="back-button">
+            <!-- <a href="index.html" class="back">Go Back</a> -->
+            <button onclick="handleLogout()" class="back" style="margin-left: 10px;">Logout</button>
+        </div>
     </div>
 </body>
 </html>
