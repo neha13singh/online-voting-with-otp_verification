@@ -56,12 +56,13 @@
         }
 
         .success {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color: #007bff;
+            border-color: #007bff;
         }
 
         .success:hover {
-            background-color: #218838;
+            background-color: #28a745;
+            border-color: #28a745;
         }
 
         .candidates-list {
@@ -96,6 +97,41 @@
             object-fit: cover;
             margin-right: 10px;
             border: 2px solid #28a745;
+        }
+
+        .logout-btn {
+            background-color: white;
+            color: #28a745;
+            border: 2px solid #00e034;
+        }
+
+        .logout-btn:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .delete-all-btn {
+            background-color: #dc3545;
+            border-color: #ffffff;
+            color: white;
+            /* border: 2px solid #ff8888; */
+        }
+
+        .delete-all-btn:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .reset-votes-btn {
+            background-color: #ecb100;
+            border-color: #ffffff;
+            color: white;
+        }
+
+        .reset-votes-btn:hover {
+            background-color: #28a745;
+            border-color: #28a745;
         }
     </style>
 </head>
@@ -132,9 +168,9 @@
 
             <!-- Action Buttons -->
             <div style="margin: 20px 0;">
-                <button onclick="resetVotes()" class="danger">Reset All Votes</button>
-                <button onclick="deleteAllCandidates()" class="danger">Delete All Candidates</button>
-                <button onclick="handleLogout()" class="danger">Logout</button>
+                <button onclick="resetVotes()" class="reset-votes-btn">Reset All Votes</button>
+                <button onclick="deleteAllCandidates()" class="delete-all-btn">Delete All Candidates</button>
+                <button onclick="handleLogout()" class="logout-btn">Logout</button>
             </div>
 
             <!-- Candidates List -->
