@@ -125,7 +125,7 @@
                         const candidateElement = document.createElement('div');
                         candidateElement.className = 'candidate';
                         candidateElement.innerHTML = `
-                            <img src="../images/candidate${candidate.id}.jpg" alt="${candidate.name}" class="candidate-image">
+                            <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
                             <h3>${candidate.name}</h3>
                             <p>Votes: ${candidate.vote_count}</p>
                             ${!hasVoted ? 

@@ -181,6 +181,133 @@ app.get('/votes/:candidate_id', (req, res) => {
 });
 
 
+// admin login api
+app.post('/admin-login', (req, res) => {
+    const { username, password } = req.body;
+    const query = 'SELECT * FROM admin WHERE username = ? AND password = ?';
+    connection.query(query, [username, password], (err, result) => {
+        if (err) {
+            console.error('Admin login error:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+        res.json({ success: true, message: 'Admin login successful' });
+    });
+});
+
+// candidate register api 
+app.post('/candidate-register', (req, res) => {
+    const { name, image} = req.body;
+    const query = 'INSERT INTO candidates (name, image) VALUES (?, ?)';
+    connection.query(query, [name, image], (err, result) => {
+        if (err) {
+            console.error('Error registering candidate:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+        res.json({ success: true, message: 'Candidate registered successfully' });
+    });
+});
+
+// reset candidate votes
+app.post('/reset-candidate-votes', (req, res) => {
+    // First reset the has_voted flag for all users
+    const resetUsersQuery = 'UPDATE users SET has_voted = FALSE';
+    connection.query(resetUsersQuery, (err, result) => {
+        if (err) {
+            console.error('Error resetting user voted status:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+        
+        // Then delete all votes
+        const deleteVotesQuery = 'DELETE FROM votes';
+        connection.query(deleteVotesQuery, (err, result) => {
+            if (err) {
+                console.error('Error resetting candidate votes:', err);
+                return res.status(500).json({ success: false, error: 'Internal server error' });
+            }
+            res.json({ success: true, message: 'Votes reset successfully' });
+        });
+    });
+});
+
+
+// candidate delete api
+app.post('/candidate-delete', (req, res) => {
+    const { id } = req.body;
+
+    // First get all users who voted for this candidate
+    const findVotersQuery = 'SELECT user_id FROM votes WHERE candidate_id = ?';
+    connection.query(findVotersQuery, [id], (err, voters) => {
+        if (err) {
+            console.error('Error finding voters:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+
+        // Get array of user IDs who voted for this candidate
+        const userIds = voters.map(voter => voter.user_id);
+
+        if (userIds.length > 0) {
+            // Reset has_voted flag for these users
+            const resetVotersQuery = 'UPDATE users SET has_voted = FALSE WHERE id IN (?)';
+            connection.query(resetVotersQuery, [userIds], (err, result) => {
+                if (err) {
+                    console.error('Error resetting voter status:', err);
+                    return res.status(500).json({ success: false, error: 'Internal server error' });
+                }
+
+                // Delete the candidate and related votes
+                const deleteVotesQuery = 'DELETE FROM votes WHERE candidate_id = ?';
+                connection.query(deleteVotesQuery, [id], (err, result) => {
+                    if (err) {
+                        console.error('Error deleting votes:', err);
+                        return res.status(500).json({ success: false, error: 'Internal server error' });
+                    }
+
+                    const deleteCandidateQuery = 'DELETE FROM candidates WHERE id = ?';
+                    connection.query(deleteCandidateQuery, [id], (err, result) => {
+                        if (err) {
+                            console.error('Error deleting candidate:', err);
+                            return res.status(500).json({ success: false, error: 'Internal server error' });
+                        }
+                        res.json({ success: true, message: 'Candidate and related votes deleted successfully' });
+                    });
+                });
+            });
+        } else {
+            // If no votes exist, just delete the candidate
+            const deleteCandidateQuery = 'DELETE FROM candidates WHERE id = ?';
+            connection.query(deleteCandidateQuery, [id], (err, result) => {
+                if (err) {
+                    console.error('Error deleting candidate:', err);
+                    return res.status(500).json({ success: false, error: 'Internal server error' });
+                }
+                res.json({ success: true, message: 'Candidate deleted successfully' });
+            });
+        }
+    });
+});
+
+// delete all candidates and reset all users' has_voted status
+app.post('/delete-all-candidates', (req, res) => {
+    // First reset all users' has_voted status
+    const resetVotersQuery = 'UPDATE users SET has_voted = FALSE';
+    connection.query(resetVotersQuery, (err, result) => {
+        if (err) {
+            console.error('Error resetting voter status:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+
+        // Then delete all candidates
+        const deleteCandidatesQuery = 'DELETE FROM candidates';
+        connection.query(deleteCandidatesQuery, (err, result) => {
+            if (err) {
+                console.error('Error deleting all candidates:', err);
+                return res.status(500).json({ success: false, error: 'Internal server error' });
+            }
+            res.json({ success: true, message: 'All candidates deleted and voter status reset successfully' });
+        });
+    });
+});
+
 
 // Add more routes for handling form submissions and voting logic
 

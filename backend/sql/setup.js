@@ -39,6 +39,16 @@ const createUsersTable = () => {
   });
 };
 
+const createAdminDatatable = () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS admin (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL,
+      password VARCHAR(255) NOT NULL,
+    )
+  `;
+};
+
 // Function to create votes table
 const createVotesTable = () => {
   const query = `
@@ -63,7 +73,9 @@ const createCandidatesTable = () => {
   const query = `
     CREATE TABLE IF NOT EXISTS candidates (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) NOT NULL
+      name VARCHAR(255) NOT NULL,
+      image VARCHAR(255) NOT NULL,
+      
     )
   `;
   connection.query(query, (err, result) => {
@@ -80,6 +92,7 @@ const runSetup = () => {
   createUsersTable();
   createVotesTable();
   createCandidatesTable();
+  createAdminDatatable();
 };
 
 // Run the setup
