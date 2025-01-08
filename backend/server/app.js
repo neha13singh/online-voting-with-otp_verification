@@ -180,6 +180,26 @@ app.get('/votes/:candidate_id', (req, res) => {
     });
 });
 
+// Get voters for a candidate
+app.get('/voters/:candidateId', (req, res) => {
+    const { candidateId } = req.params;
+    const query = `
+        SELECT u.first_name, u.last_name 
+        FROM votes v
+        JOIN users u ON v.user_id = u.id
+        WHERE v.candidate_id = ?
+    `;
+    connection.query(query, [candidateId], (err, results) => {
+        if (err) {
+            console.error('Error fetching voters:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+        const voters = results.map(voter => ({
+            name: `${voter.first_name} ${voter.last_name}`
+        }));
+        res.json({ success: true, voters });
+    });
+});
 
 // admin login api
 app.post('/admin-login', (req, res) => {

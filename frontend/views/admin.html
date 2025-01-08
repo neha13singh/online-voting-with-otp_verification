@@ -61,8 +61,8 @@
         }
 
         .success:hover {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color: #007bff;
+            border-color: #007bff;
         }
 
         .candidates-list {
@@ -118,8 +118,8 @@
         }
 
         .delete-all-btn:hover {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color: #dc3545;
+            border-color: #ffffff;
             color: white;
         }
 
@@ -130,8 +130,19 @@
         }
 
         .reset-votes-btn:hover {
-            background-color: #28a745;
-            border-color: #28a745;
+            background-color: #ecb100;
+            border-color: #ecb100;
+        }
+
+        .result-btn {
+            background-color: #17a2b8;
+            border-color: #ffffff;
+            color: white;
+        }
+
+        .result-btn:hover {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
         }
     </style>
 </head>
@@ -139,7 +150,6 @@
     <nav class="navbar">
         <div class="nav-links">
             <a href="#" onclick="handleHomeClick()" class="nav-link">Home</a>
-            
         </div>
     </nav>
     <div class="container">
@@ -170,6 +180,7 @@
             <div style="margin: 20px 0;">
                 <button onclick="resetVotes()" class="reset-votes-btn">Reset All Votes</button>
                 <button onclick="deleteAllCandidates()" class="delete-all-btn">Delete All Candidates</button>
+                <button onclick="window.location.href='/frontend/views/result.html'" class="result-btn">View Results</button>
                 <button onclick="handleLogout()" class="logout-btn">Logout</button>
             </div>
 
