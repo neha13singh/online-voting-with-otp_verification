@@ -144,7 +144,6 @@
                         candidateElement.innerHTML = `
                             <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
                             <h3>${candidate.name}</h3>
-                            <p>Votes: ${candidate.vote_count}</p>
                             ${!hasVoted ? 
                                 `<button type="button" class="vote-btn" onclick="handleVote(${candidate.id})">
                                     Vote for ${candidate.name}
