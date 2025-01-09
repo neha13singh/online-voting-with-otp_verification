@@ -101,7 +101,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-links">
-            <a href="/frontend/views/index.html" class="nav-link" onclick="localStorage.clear()">Home</a>
+            <a href="index.html" class="nav-link" onclick="localStorage.clear()">Home</a>
         </div>
     </nav>
     <script>
@@ -113,7 +113,7 @@
                     const user = JSON.parse(userData);
                     if (user.isLoggedIn) {
                         // User is already logged in, redirect to vote page
-                        window.location.href = '/frontend/views/vote.html';
+                        window.location.href = 'vote.html';
                     }
                 } catch (error) {
                     // Invalid user data, clear it
@@ -129,7 +129,7 @@
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
-            <button type="button" class="register-btn" onclick="window.location.href='/frontend/views/phone-login.html'">Register</button>
+            <button type="button" class="register-btn" onclick="window.location.href='phone-login.html'">Register</button>
             <p id="errorMessage" style="color: red; display: none;"></p>
         </form>
     </div>
@@ -166,7 +166,7 @@
                     }));
                     
                     // Redirect to vote page
-                    window.location.href = '/frontend/views/vote.html';
+                    window.location.href = 'vote.html';
                 } else {
                     // Show error and redirect to index after 2 seconds
                     alert(data.message || 'Login failed');
