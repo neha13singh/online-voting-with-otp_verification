@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
 const path = require('path');
-const twilio = require('twilio');
 const cors = require('cors');
 const fetch = (...args) =>
     import('node-fetch').then(({ default: fetch }) => fetch(...args));
@@ -29,43 +28,16 @@ connection.connect((err) => {
 });
 
 // Twilio configuration
-const accountSid = 'ACcd56c00ad5ce63d2abc0e5396a9ad735';
-const authToken = 'f10bf16fc8f37f6c91debe88d196819c';
-const client = twilio(accountSid, authToken);
+
 
 // Function to encode the phone number in base 64
+// Helper function to encode phone numbers for phone.email service
 const encodePhoneNumber = (phone_number) => {
     return Buffer.from(phone_number).toString('base64');
 };
 
 // Route to send OTP
-app.post('/send-otp', (req, res) => {
-    const { phone_number } = req.body;
 
-    if (!phone_number) {
-        return res.status(400).send('Phone number is required');
-    }
-
-    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-
-    // Log the OTP for debugging (remove in production)
-    console.log(`Generated OTP for ${phone_number}: ${otp}`);
-
-    client.messages
-        .create({
-            body: `Your OTP is ${otp}`,
-            from: '+919463634652', // Replace with your Twilio number in E.164 format
-            to: phone_number // Ensure this is in E.164 format as well
-        })
-        .then(message => {
-            console.log('OTP sent:', message.sid); // Log the message SID
-            res.send('OTP sent successfully');
-        })
-        .catch(err => {
-            console.error('Error sending OTP:', err); // Log the error
-            res.status(500).send('Error sending OTP');
-        });
-});
 
 // Register user
 app.post('/register', (req, res) => {
