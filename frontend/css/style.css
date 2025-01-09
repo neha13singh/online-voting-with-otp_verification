@@ -20,9 +20,15 @@ body {
     border: 2px solid #28a745; /* Green border */
 }
 h1 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: #28a745; /* Green text */
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    background: linear-gradient(45deg, #28a745, #1a5928);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 .candidates-container {
     display: flex;

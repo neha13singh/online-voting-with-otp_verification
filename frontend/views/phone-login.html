@@ -84,7 +84,7 @@
         
         <!-- Initial verification section -->
         <div id="verification-section">
-            <div class="pe_signin_button" data-client-id="11121934013727879288">
+            <div class="pe_signin_button" data-client-id="11121934013727879288" onclick=clearLocalStorage()>
                 <script src="https://www.phone.email/sign_in_button_v1.js" async></script>
             </div>
         </div>
@@ -120,6 +120,7 @@
             .then(data => {
                 if (data.success) {
                     if (data.isExistingUser) {
+                        alert('Your phone number is already registered. Please login with your credentials.');
                         window.location.href = 'login.html';
                     } else {
                         // Show registration form and hide verification section
