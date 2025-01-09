@@ -54,9 +54,9 @@ app.post('/register', (req, res) => {
 });
 
 // Routes
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../../frontend/views/index.html'));
-// });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/views/index.html'));
+});
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -94,9 +94,9 @@ app.post('/login', (req, res) => {
 
 
 
-// app.get('/register', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../../frontend/views/register.html'));
-// });
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/views/register.html'));
+});
 
 
 
@@ -355,9 +355,21 @@ app.post('/verify-phone-email', async (req, res) => {
 });
 
 // Add new route for phone-login page
-// app.get('/phone-login', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../../frontend/views/phone-login.html'));
-// });
+app.get('/phone-login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/views/phone-login.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/views/login.html'));
+});
+
+app.get('/vote', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/views/vote.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../frontend/views/admin.html'));
+});
 
 app.listen(3000, () => {
   console.log('Server running on port 3000');
