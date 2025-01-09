@@ -69,10 +69,10 @@ app.post('/send-otp', (req, res) => {
 
 // Register user
 app.post('/register', (req, res) => {
-    const { username, phone_number, password, first_name, last_name } = req.body;
+    const { username, phone_number, password, first_name, last_name, age } = req.body;
 
-    const query = 'INSERT INTO users (username, phone_number, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)';
-    connection.query(query, [username, phone_number, password, first_name, last_name], (err, result) => {
+    const query = 'INSERT INTO users (username, phone_number, password, first_name, last_name, age) VALUES (?, ?, ?, ?, ?, ?)';
+    connection.query(query, [username, phone_number, password, first_name, last_name, age], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
             return res.status(500).send('Error registering user');
@@ -108,7 +108,8 @@ app.post('/login', (req, res) => {
       id: results[0].id,
       username: results[0].username,
       has_voted: results[0].has_voted,
-      isLoggedIn: true
+      isLoggedIn: true,
+      age: results[0].age
     };
 
     res.json({ 
