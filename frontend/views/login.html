@@ -101,8 +101,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-links">
-            <a href="/frontend/views/index.html" class="nav-link">Home</a>
-            
+            <a href="/frontend/views/index.html" class="nav-link" onclick="localStorage.clear()">Home</a>
         </div>
     </nav>
     <script>
@@ -130,7 +129,7 @@
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
-            <button type="button" class="register-btn" onclick="window.location.href='/frontend/views/register.html'">Register</button>
+            <button type="button" class="register-btn" onclick="window.location.href='/frontend/views/phone-login.html'">Register</button>
             <p id="errorMessage" style="color: red; display: none;"></p>
         </form>
     </div>
