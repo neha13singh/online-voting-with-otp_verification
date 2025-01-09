@@ -4,7 +4,8 @@
     "description": "Frontend for the online voting platform",
     "main": "js/main.js",
     "scripts": {
-      "start": "echo 'Frontend does not require a server to run.'"
+      "start": "echo 'Frontend does not require a server to run.'",
+      "build": "mkdir -p build && cp -r views css js build/"
     },
     "author": "Your Name",
     "license": "ISC"

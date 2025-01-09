@@ -1,7 +1,7 @@
 services:
   - type: web
     name: your-app-name
-    env: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server/app.js
-    nodeVersion: 18.x
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishDir: frontend/build
+    staticPublishPath: /` 
