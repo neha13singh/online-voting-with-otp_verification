@@ -102,11 +102,29 @@
    
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <!-- //clear local storage  -->
+            <a href="/frontend/views/index.html" class="nav-link" onclick="localStorage.clear()">Home</a>
+           
+        </div>
+    </nav>
+
     <script>
         function handleLogout() {
             localStorage.removeItem('userData');
             alert('You have been logged out successfully');
             window.location.href = '/frontend/views/login.html';
+        }
+
+        function handleResultClick() {
+            const userData = localStorage.getItem('userData');
+            if (!userData) {
+                alert('Please login to view results');
+                window.location.href = '/frontend/views/login.html';
+                return false;
+            }
+            return true;
         }
 
         async function updateCandidatesDisplay() {
@@ -127,7 +145,6 @@
                         candidateElement.innerHTML = `
                             <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
                             <h3>${candidate.name}</h3>
-                            <p>Votes: ${candidate.vote_count}</p>
                             ${!hasVoted ? 
                                 `<button type="button" class="vote-btn" onclick="handleVote(${candidate.id})">
                                     Vote for ${candidate.name}
@@ -228,3 +245,4 @@
     </div>
 </body>
 </html>
+

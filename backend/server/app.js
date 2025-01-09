@@ -69,10 +69,10 @@ app.post('/send-otp', (req, res) => {
 
 // Register user
 app.post('/register', (req, res) => {
-    const { username, phone_number, password, first_name, last_name } = req.body;
+    const { username, phone_number, password, first_name, last_name, age } = req.body;
 
-    const query = 'INSERT INTO users (username, phone_number, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)';
-    connection.query(query, [username, phone_number, password, first_name, last_name], (err, result) => {
+    const query = 'INSERT INTO users (username, phone_number, password, first_name, last_name, age) VALUES (?, ?, ?, ?, ?, ?)';
+    connection.query(query, [username, phone_number, password, first_name, last_name, age], (err, result) => {
         if (err) {
             console.error('Error registering user:', err);
             return res.status(500).send('Error registering user');
@@ -108,7 +108,8 @@ app.post('/login', (req, res) => {
       id: results[0].id,
       username: results[0].username,
       has_voted: results[0].has_voted,
-      isLoggedIn: true
+      isLoggedIn: true,
+      age: results[0].age
     };
 
     res.json({ 
@@ -180,6 +181,26 @@ app.get('/votes/:candidate_id', (req, res) => {
     });
 });
 
+// Get voters for a candidate
+app.get('/voters/:candidateId', (req, res) => {
+    const { candidateId } = req.params;
+    const query = `
+        SELECT u.first_name, u.last_name 
+        FROM votes v
+        JOIN users u ON v.user_id = u.id
+        WHERE v.candidate_id = ?
+    `;
+    connection.query(query, [candidateId], (err, results) => {
+        if (err) {
+            console.error('Error fetching voters:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+        const voters = results.map(voter => ({
+            name: `${voter.first_name} ${voter.last_name}`
+        }));
+        res.json({ success: true, voters });
+    });
+});
 
 // admin login api
 app.post('/admin-login', (req, res) => {

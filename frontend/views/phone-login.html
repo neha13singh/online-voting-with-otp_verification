@@ -63,15 +63,28 @@
         .hidden {
             display: none;
         }
+        .age-instruction {
+            color: #dc3545;
+            font-size: 0.9rem;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <!-- //clear local storage  -->
+            <a href="/frontend/views/index.html" class="nav-link" onclick="localStorage.clear()">Home</a>
+            
+        </div>
+    </nav>
     <div class="card">
         <h1>Phone Verification</h1>
         
         <!-- Initial verification section -->
         <div id="verification-section">
-            <div class="pe_signin_button" data-client-id="13712223655013483399">
+            <div class="pe_signin_button" data-client-id="11121934013727879288">
                 <script src="https://www.phone.email/sign_in_button_v1.js" async></script>
             </div>
         </div>
@@ -81,10 +94,12 @@
             <h2>Complete Registration</h2>
             <form id="registerForm">
                 <input type="text" name="phone_number" readonly>
-                <input type="text" name="first_name" placeholder="First Name" required>
-                <input type="text" name="last_name" placeholder="Last Name" required>
+                <input type="text" name="first_name" placeholder="Enter First Name" required>
+                <input type="text" name="last_name" placeholder="Enter Last Name" required>
                 <input type="text" name="username" placeholder="Choose Username" required>
                 <input type="password" name="password" placeholder="Choose Password" required>
+                <input type="number" name="age" placeholder="Enter Age" required min="18">
+                <div class="age-instruction">* You must be 18 years or older to register</div>
                 <button type="submit">Register</button>
             </form>
         </div>
@@ -107,22 +122,13 @@
                     if (data.isExistingUser) {
                         window.location.href = 'login.html';
                     } else {
-                        // Fetch user data from the provided URL
-                        fetch(user_json_url)
-                            .then(response => response.json())
-                            .then(userData => {
-                                // Show registration form and hide verification section
-                                document.getElementById('verification-section').classList.add('hidden');
-                                document.getElementById('registration-section').classList.remove('hidden');
-                                
-                                // Decode and display the phone number
-                                const decodedPhone = atob(data.phone_number);
-                                document.querySelector('input[name="phone_number"]').value = decodedPhone;
-                                
-                                // Set first name and last name from userData
-                                document.querySelector('input[name="first_name"]').value = userData.user_first_name || '';
-                                document.querySelector('input[name="last_name"]').value = userData.user_last_name || '';
-                            });
+                        // Show registration form and hide verification section
+                        document.getElementById('verification-section').classList.add('hidden');
+                        document.getElementById('registration-section').classList.remove('hidden');
+                        
+                        // Decode and display the phone number
+                        const decodedPhone = atob(data.phone_number);
+                        document.querySelector('input[name="phone_number"]').value = decodedPhone;
                     }
                 } else {
                     alert('Verification failed. Please try again.');
@@ -138,12 +144,19 @@
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
+            const age = parseInt(this.age.value);
+            if (age < 18) {
+                alert('You must be 18 years or older to register');
+                return;
+            }
+
             const formData = {
                 phone_number: this.phone_number.value,
                 first_name: this.first_name.value,
                 last_name: this.last_name.value,
                 username: this.username.value,
-                password: this.password.value
+                password: this.password.value,
+                age: age
             };
 
             fetch('http://localhost:3000/register', {

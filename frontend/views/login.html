@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
     <title>Login</title>
     <style>
         /* Global Styles */
@@ -61,11 +62,29 @@
             font-size: 1.1rem;
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.2s ease;
+            margin-bottom: 10px;
+            box-sizing: border-box; /* Add this to match sizing */
         }
 
         button:hover {
             background-color: #218838; /* Darker green on hover */
             transform: scale(1.05); /* Slight zoom effect */
+        }
+
+        .register-btn {
+            width: 100%; /* Make register button same width as login */
+            background-color: white;
+            color: #28a745;
+            border: 2px solid #28a745;
+            padding: 5px; 
+            font-size: 1.1rem;
+            box-sizing: border-box; /* Add this to match sizing */
+            margin: 0; /* Remove any margin */
+        }
+
+        .register-btn:hover {
+            background-color: #28a745;
+            color: white;
         }
 
         /* Responsive adjustments */
@@ -80,6 +99,11 @@
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="/frontend/views/index.html" class="nav-link" onclick="localStorage.clear()">Home</a>
+        </div>
+    </nav>
     <script>
         // Check if user is already logged in
         window.onload = function() {
@@ -105,6 +129,7 @@
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
+            <button type="button" class="register-btn" onclick="window.location.href='/frontend/views/phone-login.html'">Register</button>
             <p id="errorMessage" style="color: red; display: none;"></p>
         </form>
     </div>

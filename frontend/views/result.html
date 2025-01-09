@@ -3,142 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
     <title>Election Results</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0fff0;
+            background: linear-gradient(135deg, #f0fff0 0%, #e0ffe0 100%);
         }
 
         .card {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.2);
+            padding: 40px;
             width: 90%;
             max-width: 800px;
             text-align: center;
-            border: 3px solid #28a745;
+            border: none;
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            color: #28a745;
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            color: #1a5928;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-weight: 800;
+            letter-spacing: 1px;
         }
 
-        .results-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
+        .winner-card {
+            background: linear-gradient(165deg, #ffffff, #f0fff0);
+            border: none;
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.15);
+        }
+
+        .winner-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(40, 167, 69, 0.2);
+        }
+
+        .winner-card .candidate-image {
+            width: 220px;
+            height: 220px;
+            transition: transform 0.3s ease;
+        }
+
+        .winner-card .candidate-image:hover {
+            transform: scale(1.05);
+        }
+
+        .winner-card .candidate-name {
+            font-size: 2.2rem;
+            background: linear-gradient(45deg, #28a745, #1a5928);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin: 20px 0;
         }
 
+        .winner-card .vote-count {
+            font-size: 3rem;
+            color: #28a745;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(40, 167, 69, 0.2);
+        }
+
+        .winner-label {
+            background: linear-gradient(45deg, #ed7f3a, #db1414);
+            color: white;
+            padding: 15px 30px;
+            
+            border-radius: 30px;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 2 rem;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-size: 200% auto;
+        }
+
+        .winner-label:hover {
+            background-position: right center;
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .participant-label {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 25px;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-size: 200% auto;
+        }
+
+        .participant-label:hover {
+            background-position: right center;
+            transform: translateX(-50%) scale(1.1);
+            box-shadow: 0 6px 18px rgba(108, 117, 125, 0.4);
+        }
+
+        .other-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
         .result-card {
-            background: linear-gradient(145deg, #ffffff, #f9fff9);
-            border: 2px solid #28a745;
-            border-radius: 10px;
-            padding: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(165deg, #ffffff, #f9fff9);
+            border: none;
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(40, 167, 69, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.2);
         }
 
         .candidate-image {
-            width: 120px;
-            height: 120px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            margin: 0 auto 15px;
-            border: 3px solid #28a745;
+            margin: 0 auto 20px;
+            border: 4px solid #28a745;
             object-fit: cover;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.2);
+            transition: all 0.3s ease;
         }
 
         .candidate-name {
-            font-size: 1.4rem;
-            color: #218838;
-            margin: 10px 0;
-            font-weight: bold;
+            font-size: 1.6rem;
+            color: #1a5928;
+            margin: 15px 0;
+            font-weight: 700;
         }
 
         .vote-count {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #28a745;
-            margin: 15px 0;
-            font-weight: bold;
+            margin: 20px 0;
+            font-weight: 700;
         }
 
         .progress-bar {
             width: 100%;
-            height: 20px;
+            height: 12px;
             background-color: #e9ecef;
-            border-radius: 10px;
+            border-radius: 20px;
             overflow: hidden;
-            margin: 15px 0;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .progress {
             height: 100%;
-            background-color: #28a745;
-            transition: width 1s ease-in-out;
-            border-radius: 10px;
+            background: linear-gradient(45deg, #28a745, #1a5928);
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
         }
 
         .percentage {
-            font-size: 1.1rem;
-            color: #666;
-            margin-top: 5px;
+            font-size: 1.2rem;
+            color: #555;
+            margin-top: 10px;
+            font-weight: 500;
         }
 
         .refresh-btn {
-            background-color: #28a745;
-            color: white;
+            background: linear-gradient(45deg, #effca7, #f5f25b);
+            color: rgb(0, 0, 0);
             border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1.2rem;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 30px;
             transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .refresh-btn:hover {
-            background-color: #218838;
-            transform: scale(1.05);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .voters-btn {
+            background: linear-gradient(45deg, #17a2b8, #138496);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
+            font-weight: 500;
+        }
+
+        .voters-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(23, 162, 184, 0.3);
+            background: linear-gradient(45deg, #138496, #17a2b8);
+        }
+
+        .voters-list {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(240, 255, 240, 0.8);
+            border-radius: 15px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .voters-list.show {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 600px) {
             .card {
-                padding: 20px;
+                padding: 25px;
+                margin: 15px;
             }
 
             h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
 
             .result-card {
-                padding: 15px;
+                padding: 20px;
+            }
+
+            .winner-card .candidate-image {
+                width: 180px;
+                height: 180px;
             }
         }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <!-- <a href="/frontend/views/index.html" class="nav-link">Home</a> -->
+            <a href="/frontend/views/admin.html" class="nav-link">Home</a>
+        </div>
+    </nav>
     <div class="card">
         <h1>Election Results</h1>
-        <div class="results-container" id="resultsContainer">
-            <!-- Results will be dynamically loaded here -->
+        <div id="winnerContainer">
+            <!-- Winner card will be displayed here -->
+        </div>
+        <div class="other-results" id="otherResultsContainer">
+            <!-- Other candidates will be displayed here -->
         </div>
         <button onclick="refreshResults()" class="refresh-btn">
             Refresh Results
@@ -152,14 +308,46 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const resultsContainer = document.getElementById('resultsContainer');
-                    resultsContainer.innerHTML = '';
+                    const winnerContainer = document.getElementById('winnerContainer');
+                    const otherResultsContainer = document.getElementById('otherResultsContainer');
+                    
+                    winnerContainer.innerHTML = '';
+                    otherResultsContainer.innerHTML = '';
                     
                     // Calculate total votes
                     const totalVotes = data.candidates.reduce((sum, candidate) => 
                         sum + (candidate.vote_count || 0), 0);
 
-                    data.candidates.forEach(candidate => {
+                    // Sort candidates by vote count
+                    const sortedCandidates = [...data.candidates].sort((a, b) => 
+                        (b.vote_count || 0) - (a.vote_count || 0));
+
+                    const winner = sortedCandidates[0];
+                    const otherCandidates = sortedCandidates.slice(1);
+
+                    // Display winner
+                    const winnerPercentage = totalVotes > 0 
+                        ? ((winner.vote_count || 0) / totalVotes * 100).toFixed(1) 
+                        : 0;
+
+                    const winnerCard = document.createElement('div');
+                    winnerCard.className = 'winner-card';
+                    winnerCard.innerHTML = `
+                        <div class="winner-label">WINNER</div>
+                        <img src="${winner.image}" alt="${winner.name}" class="candidate-image">
+                        <h3 class="candidate-name">${winner.name}</h3>
+                        <div class="vote-count">${winner.vote_count || 0}</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${winnerPercentage}%"></div>
+                        </div>
+                        <div class="percentage">${winnerPercentage}% of total votes</div>
+                        <button onclick="showVoters(${winner.id})" class="voters-btn">See Voters</button>
+                        <div id="voters-${winner.id}" class="voters-list"></div>
+                    `;
+                    winnerContainer.appendChild(winnerCard);
+
+                    // Display other candidates
+                    otherCandidates.forEach(candidate => {
                         const percentage = totalVotes > 0 
                             ? ((candidate.vote_count || 0) / totalVotes * 100).toFixed(1) 
                             : 0;
@@ -167,19 +355,52 @@
                         const resultCard = document.createElement('div');
                         resultCard.className = 'result-card';
                         resultCard.innerHTML = `
-                            <img src="../images/candidate${candidate.id}.jpg" alt="${candidate.name}" class="candidate-image">
+                            <div class="participant-label">OTHER PARTICIPANTS</div>
+                            <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
                             <h3 class="candidate-name">${candidate.name}</h3>
                             <div class="vote-count">${candidate.vote_count || 0}</div>
                             <div class="progress-bar">
                                 <div class="progress" style="width: ${percentage}%"></div>
                             </div>
                             <div class="percentage">${percentage}% of total votes</div>
+                            <button onclick="showVoters(${candidate.id})" class="voters-btn">See Voters</button>
+                            <div id="voters-${candidate.id}" class="voters-list"></div>
                         `;
-                        resultsContainer.appendChild(resultCard);
+                        otherResultsContainer.appendChild(resultCard);
                     });
                 }
             } catch (error) {
                 console.error('Error loading results:', error);
+            }
+        }
+
+        async function showVoters(candidateId) {
+            try {
+                const response = await fetch(`http://localhost:3000/voters/${candidateId}`);
+                const data = await response.json();
+                
+                const votersList = document.getElementById(`voters-${candidateId}`);
+                
+                if (votersList.classList.contains('show')) {
+                    votersList.classList.remove('show');
+                    votersList.innerHTML = '';
+                } else {
+                    votersList.classList.add('show');
+                    if (data.success && data.voters.length > 0) {
+                        votersList.innerHTML = `
+                            <h4>Voters:</h4>
+                            ${data.voters.map(voter => `
+                                <div style="background-color: white; border: 2px solid #28a745; padding: 8px; margin: 4px; border-radius: 4px;">
+                                    <span style="color: #28a745;">${voter.name}</span>
+                                </div>
+                            `).join('')}
+                        `;
+                    } else {
+                        votersList.innerHTML = '<div>No voters yet</div>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching voters:', error);
             }
         }
 
