@@ -202,6 +202,19 @@ app.get('/voters/:candidateId', (req, res) => {
     });
 });
 
+// Check if admin exists
+app.post('/check-admin', (req, res) => {
+    const { username, password } = req.body;
+    const query = 'SELECT * FROM admin WHERE username = ? AND password = ?';
+    connection.query(query, [username, password], (err, results) => {
+        if (err) {
+            console.error('Error checking admin:', err);
+            return res.status(500).json({ success: false, error: 'Internal server error' });
+        }
+        res.json({ exists: results.length > 0 });
+    });
+});
+
 // admin login api
 app.post('/admin-login', (req, res) => {
     const { username, password } = req.body;
@@ -211,7 +224,7 @@ app.post('/admin-login', (req, res) => {
             console.error('Admin login error:', err);
             return res.status(500).json({ success: false, error: 'Internal server error' });
         }
-        res.json({ success: true, message: 'Admin login successful' });
+        res.json({ success: true, message: 'Admin login successful', isAdmin: true, username: username });
     });
 });
 
