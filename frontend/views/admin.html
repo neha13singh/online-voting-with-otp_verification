@@ -183,7 +183,7 @@
             <div style="margin: 20px 0;">
                 <button onclick="resetVotes()" class="reset-votes-btn">Reset All Votes</button>
                 <button onclick="deleteAllCandidates()" class="delete-all-btn">Delete All Candidates</button>
-                <button onclick="window.location.href='/frontend/views/result.html'" class="result-btn">View Results</button>
+                <button onclick="window.location.href='result.html'" class="result-btn">View Results</button>
                 <button onclick="handleLogout()" class="logout-btn">Logout</button>
             </div>
 
@@ -206,7 +206,7 @@
 
         function handleHomeClick() {
             localStorage.clear();
-            window.location.href = '/frontend/views/index.html';
+            window.location.href = 'index.html';
         }
 
         async function handleLogin() {
