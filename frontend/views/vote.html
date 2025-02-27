@@ -99,6 +99,10 @@
         }
        
     </style>
+      <script>
+        // Set BASE_URL from a global variable instead of dotenv
+        const BASE_URL = 'http://localhost:3000'; // Default to localhost if not set
+    </script>
    
 </head>
 <body>
@@ -129,7 +133,7 @@
 
         async function updateCandidatesDisplay() {
             try {
-                const response = await fetch('http://localhost:3000/candidates');
+                const response = await fetch(`${BASE_URL}/candidates`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -178,7 +182,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:3000/vote', {
+                const response = await fetch(`${BASE_URL}/vote`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

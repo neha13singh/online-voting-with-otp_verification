@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2');
@@ -14,12 +16,14 @@ app.use(bodyParser.json()); // Add this line to parse JSON requests
 
 // MySQL connection
 const connection = mysql.createConnection({
-  host: 'sql12.freesqldatabase.com',
-  user: 'sql12764889',
-  database: 'sql12764889',
-  password: 'XV7zfPEWbb',
-  port: 3306,
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  database: process.env.DATABASE_NAME,
+  password: process.env.DATABASE_PASSWORD,
+  port: process.env.DATABASE_PORT,
 });
+
+
 
 connection.connect((err) => {
   if (err) throw err;

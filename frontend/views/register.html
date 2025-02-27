@@ -64,6 +64,10 @@
             transform: scale(1.05); /* Slight zoom effect */
         }
     </style>
+      <script>
+        // Set BASE_URL from a global variable instead of dotenv
+        const BASE_URL = 'http://localhost:3000'; // Default to localhost if not set
+    </script>
 </head>
 <body>
     <nav class="navbar">
@@ -112,7 +116,7 @@
                 password: this.password.value
             };
 
-            fetch('http://localhost:3000/register', {
+            fetch(`${BASE_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

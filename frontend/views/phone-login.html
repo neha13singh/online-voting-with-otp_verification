@@ -70,6 +70,10 @@
             margin-bottom: 10px;
         }
     </style>
+      <script>
+        // Set BASE_URL from a global variable instead of dotenv
+        const BASE_URL = 'http://localhost:3000'; // Default to localhost if not set
+    </script>
 </head>
 <body>
     <nav class="navbar">
@@ -109,7 +113,7 @@
         function phoneEmailListener(userObj) {
             var user_json_url = userObj.user_json_url;
             
-            fetch('http://localhost:3000/verify-phone-email', {
+            fetch(`${BASE_URL}/verify-phone-email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -160,7 +164,7 @@
                 age: age
             };
 
-            fetch('http://localhost:3000/register', {
+            fetch(`${BASE_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -182,4 +186,7 @@
         });
     </script>
 </body>
+</html>
+</html>
+</html>
 </html>
