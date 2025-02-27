@@ -115,7 +115,6 @@
             background-color: #dc3545;
             border-color: #ffffff;
             color: white;
-            /* border: 2px solid #ff8888; */
         }
 
         .delete-all-btn:hover {
@@ -145,6 +144,10 @@
             background-color: #17a2b8;
             border-color: #17a2b8;
         }
+
+        h1 {
+            text-align: center; /* Center the heading */
+        }
     </style>
 </head>
 <body>
@@ -156,7 +159,7 @@
     <div class="container">
         <!-- Login Section -->
         <div id="loginSection">
-            <h1>निर्वाचन आयोग</h1>
+            <h1>Admin Panel</h1>
             <div class="form-group">
                 <input type="text" id="username" placeholder="Username">
             </div>
@@ -170,7 +173,7 @@
 
         <!-- Admin Panel Section -->
         <div id="adminPanel" class="hidden">
-            <h1>निर्वाचन आयोग</h1>
+            <h1>Election Commission</h1>
             
             <!-- Add Candidate Section -->
             <div class="form-group">
@@ -200,7 +203,7 @@
             const adminData = localStorage.getItem('adminData');
             if (adminData) {
                 showAdminPanel();
-                loadCandidates();
+               loadCandidates();
             }
         }
 
