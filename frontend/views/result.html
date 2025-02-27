@@ -308,7 +308,7 @@
     <script>
         async function loadResults() {
             try {
-                const response = await fetch('http://localhost:3000/candidates');
+                const response = await fetch(`${BASE_URL}/candidates`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -380,7 +380,7 @@
 
         async function showVoters(candidateId) {
             try {
-                const response = await fetch(`http://localhost:3000/voters/${candidateId}`);
+                const response = await fetch(`${BASE_URL}/voters/${candidateId}`);
                 const data = await response.json();
                 
                 const votersList = document.getElementById(`voters-${candidateId}`);
