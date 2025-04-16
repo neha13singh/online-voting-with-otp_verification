@@ -282,6 +282,36 @@
         <script>
             // Set BASE_URL from a global variable instead of dotenv
             const BASE_URL = 'http://localhost:3000'; // Default to localhost if not set
+
+            async function showVoters(candidateId) {
+                try {
+                    const response = await fetch(`${BASE_URL}/voters/${candidateId}`);
+                    const data = await response.json();
+                    
+                    const votersList = document.getElementById(`voters-${candidateId}`);
+                    
+                    if (votersList.classList.contains('show')) {
+                        votersList.classList.remove('show');
+                        votersList.innerHTML = '';
+                    } else {
+                        votersList.classList.add('show');
+                        if (data.success && data.voters.length > 0) {
+                            votersList.innerHTML = `
+                                <h4>Voters:</h4>
+                                ${data.voters.map(voter => `
+                                    <div style="background-color: white; border: 2px solid #28a745; padding: 8px; margin: 4px; border-radius: 4px;">
+                                        <span style="color: #28a745;">${voter.name}</span>
+                                    </div>
+                                `).join('')}
+                            `;
+                        } else {
+                            votersList.innerHTML = '<div>No voters yet</div>';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching voters:', error);
+                }
+            }
         </script>
 </head>
 <body>
