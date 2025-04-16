@@ -84,7 +84,6 @@
             background: linear-gradient(45deg, #ed7f3a, #db1414);
             color: white;
             padding: 15px 30px;
-            
             border-radius: 30px;
             position: absolute;
             top: -20px;
@@ -288,7 +287,6 @@
 <body>
     <nav class="navbar">
         <div class="nav-links">
-            <!-- <a href="/frontend/views/index.html" class="nav-link">Home</a> -->
             <a href="/frontend/views/admin.html" class="nav-link">Home</a>
         </div>
     </nav>
@@ -306,107 +304,85 @@
     </div>
 
     <script>
-        async function loadResults() {
-            try {
-                const response = await fetch(`${BASE_URL}/candidates`);
-                const data = await response.json();
-                
-                if (data.success) {
-                    const winnerContainer = document.getElementById('winnerContainer');
-                    const otherResultsContainer = document.getElementById('otherResultsContainer');
-                    
-                    winnerContainer.innerHTML = '';
-                    otherResultsContainer.innerHTML = '';
-                    
-                    // Calculate total votes
-                    const totalVotes = data.candidates.reduce((sum, candidate) => 
-                        sum + (candidate.vote_count || 0), 0);
+async function loadResults() {
+  try {
+    const response = await fetch(`${BASE_URL}/candidates`);
+    const data = await response.json();
 
-                    // Sort candidates by vote count
-                    const sortedCandidates = [...data.candidates].sort((a, b) => 
-                        (b.vote_count || 0) - (a.vote_count || 0));
+    if (!data.success) return;
 
-                    const winner = sortedCandidates[0];
-                    const otherCandidates = sortedCandidates.slice(1);
+    const winnerContainer = document.getElementById('winnerContainer');
+    const otherResultsContainer = document.getElementById('otherResultsContainer');
+    winnerContainer.innerHTML = '';
+    otherResultsContainer.innerHTML = '';
 
-                    // Display winner
-                    const winnerPercentage = totalVotes > 0 
-                        ? ((winner.vote_count || 0) / totalVotes * 100).toFixed(1) 
-                        : 0;
+    const candidates = data.candidates || [];
+    const totalVotes = candidates.reduce((sum, c) => sum + (c.vote_count || 0), 0);
 
-                    const winnerCard = document.createElement('div');
-                    winnerCard.className = 'winner-card';
-                    winnerCard.innerHTML = `
-                        <div class="winner-label">WINNER</div>
-                        <img src="${winner.image}" alt="${winner.name}" class="candidate-image">
-                        <h3 class="candidate-name">${winner.name}</h3>
-                        <div class="vote-count">${winner.vote_count || 0}</div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: ${winnerPercentage}%"></div>
-                        </div>
-                        <div class="percentage">${winnerPercentage}% of total votes</div>
-                        <button onclick="showVoters(${winner.id})" class="voters-btn">See Voters</button>
-                        <div id="voters-${winner.id}" class="voters-list"></div>
-                    `;
-                    winnerContainer.appendChild(winnerCard);
+    const sorted = [...candidates].sort((a, b) => (b.vote_count || 0) - (a.vote_count || 0));
+    const topVote = sorted[0]?.vote_count || 0;
+    const topCandidates = sorted.filter(c => (c.vote_count || 0) === topVote);
 
-                    // Display other candidates
-                    otherCandidates.forEach(candidate => {
-                        const percentage = totalVotes > 0 
-                            ? ((candidate.vote_count || 0) / totalVotes * 100).toFixed(1) 
-                            : 0;
+    let winnerId = null;
 
-                        const resultCard = document.createElement('div');
-                        resultCard.className = 'result-card';
-                        resultCard.innerHTML = `
-                            <div class="participant-label">OTHER PARTICIPANTS</div>
-                            <img src="${candidate.image}" alt="${candidate.name}" class="candidate-image">
-                            <h3 class="candidate-name">${candidate.name}</h3>
-                            <div class="vote-count">${candidate.vote_count || 0}</div>
-                            <div class="progress-bar">
-                                <div class="progress" style="width: ${percentage}%"></div>
-                            </div>
-                            <div class="percentage">${percentage}% of total votes</div>
-                            <button onclick="showVoters(${candidate.id})" class="voters-btn">See Voters</button>
-                            <div id="voters-${candidate.id}" class="voters-list"></div>
-                        `;
-                        otherResultsContainer.appendChild(resultCard);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading results:', error);
-            }
-        }
+    // CASE 1: No votes yet
+    if (totalVotes === 0) {
+      winnerContainer.innerHTML = `<div class="winner-card"><h3>No votes yet</h3></div>`;
+    }
 
-        async function showVoters(candidateId) {
-            try {
-                const response = await fetch(`${BASE_URL}/voters/${candidateId}`);
-                const data = await response.json();
-                
-                const votersList = document.getElementById(`voters-${candidateId}`);
-                
-                if (votersList.classList.contains('show')) {
-                    votersList.classList.remove('show');
-                    votersList.innerHTML = '';
-                } else {
-                    votersList.classList.add('show');
-                    if (data.success && data.voters.length > 0) {
-                        votersList.innerHTML = `
-                            <h4>Voters:</h4>
-                            ${data.voters.map(voter => `
-                                <div style="background-color: white; border: 2px solid #28a745; padding: 8px; margin: 4px; border-radius: 4px;">
-                                    <span style="color: #28a745;">${voter.name}</span>
-                                </div>
-                            `).join('')}
-                        `;
-                    } else {
-                        votersList.innerHTML = '<div>No voters yet</div>';
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching voters:', error);
-            }
-        }
+    // CASE 2: Single winner
+    else if (topCandidates.length === 1) {
+      const winner = topCandidates[0];
+      winnerId = winner.id;
+
+      const percent = ((winner.vote_count / totalVotes) * 100).toFixed(1);
+      const winnerCard = document.createElement('div');
+      winnerCard.className = 'winner-card';
+      winnerCard.innerHTML = `
+        <div class="label winner-label">WINNER</div>
+        <img src="${winner.image}" alt="${winner.name}" class="candidate-image">
+        <h3 class="candidate-name">${winner.name}</h3>
+        <div class="vote-count">${winner.vote_count}</div>
+        <div class="progress-bar"><div class="progress" style="width: ${percent}%"></div></div>
+        <div class="percentage">${percent}% of total votes</div>
+        <button onclick="showVoters(${winner.id})" class="voters-btn">See Voters</button>
+        <div id="voters-${winner.id}" class="voters-list"></div>
+      `;
+      winnerContainer.appendChild(winnerCard);
+    }
+
+    // CASE 3: Draw
+    else {
+      winnerContainer.innerHTML = `<div class="winner-card"><h3>It's a draw!</h3></div>`;
+    }
+
+    // Render other candidates
+    sorted.forEach(c => {
+      if (c.id === winnerId) return; // Skip winner
+
+      const percent = totalVotes > 0 
+        ? ((c.vote_count || 0) / totalVotes * 100).toFixed(1)
+        : 0;
+
+      const resultCard = document.createElement('div');
+      resultCard.className = 'result-card';
+      resultCard.innerHTML = `
+        <div class="label participant-label">OTHER CANDIDATE</div>
+        <img src="${c.image}" alt="${c.name}" class="candidate-image">
+        <h3 class="candidate-name">${c.name}</h3>
+        <div class="vote-count">${c.vote_count || 0}</div>
+        <div class="progress-bar"><div class="progress" style="width: ${percent}%"></div></div>
+        <div class="percentage">${percent}% of total votes</div>
+        <button onclick="showVoters(${c.id})" class="voters-btn">See Voters</button>
+        <div id="voters-${c.id}" class="voters-list"></div>
+      `;
+      otherResultsContainer.appendChild(resultCard);
+    });
+
+  } catch (error) {
+    console.error('Error loading results:', error);
+  }
+}
 
         function refreshResults() {
             loadResults();
